@@ -11,6 +11,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [copying, setCopying] = useState(false); // Track if URL is being copied
   const [copied, setCopied] = useState(false); // Track if URL is copied
+  const [alias,setAlias]=useState("");
 
   const urlPattern =
     /^(https?:\/\/)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+)(\/[^\s]*)?$/;
@@ -32,7 +33,7 @@ export default function Home() {
       const res = await fetch("/api/shorten", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ originalUrl }), // Send the original URL to the server
+        body: JSON.stringify({ originalUrl, alias }), // Send the original URL to the server
       });
 
       const data = await res.json();
@@ -86,45 +87,55 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-between">
-      <div className="p-8 rounded-xl shadow-lg w-full max-w-lg mt-3">
-        <h1
-          className="text-5xl bg-gray-500 p-5 font-serif rounded-2xl bg-opacity-40 font-bold text-center mb-6 
-  text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-600 to-blue-500"
-        >
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 flex flex-col items-center justify-between">
+      <div className="p-8 rounded-3xl shadow-2xl w-full max-w-lg mt-10 bg-white">
+        <h1 className="text-6xl font-serif rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-transparent bg-clip-text font-bold text-center mb-8">
           Short URL
         </h1>
 
-        <p className="text-center text-4xl font-serif font-semibold text-gray-600 mb-10">
-          Paste the URL to be shortened
+        <p className="text-center text-xl font-medium text-gray-600 mb-8">
+          Paste your URL below and make it short & sweet
         </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <input
               type="text"
               value={originalUrl}
               onChange={(e) => setOriginalUrl(e.target.value)}
-              placeholder="Enter the link here"
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="Enter the link to shorten"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-500 outline-none shadow-sm"
             />
-            {error && (
-              <p className="text-red-500 text-sm absolute -bottom-5 left-0">
-                {error}
-              </p>
-            )}
           </div>
+
+          <div className="relative">
+            <input
+              type="text"
+              value={alias}
+              onChange={(e) => setAlias(e.target.value)}
+              placeholder="Custom Alias (Optional)"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:ring-4 focus:ring-pink-500 outline-none shadow-sm"
+            />
+          </div>
+
+          {error && (
+            <p className="text-red-600 text-center text-sm font-medium">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
-            className={`w-full py-3 rounded-md ${
+            className={`w-full py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 text-white text-lg font-semibold ${
               loading
                 ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            } text-white text-lg font-semibold`}
+                : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-pink-500 hover:to-purple-600"
+            } `}
             disabled={loading}
           >
             {loading ? (
               <div className="flex justify-center items-center">
-                <div className="w-5 h-5 border-4 border-white border-t-blue-600 rounded-full animate-spin mr-2"></div>
+                <div className="w-5 h-5 border-4 border-white border-t-blue-500 rounded-full animate-spin mr-2"></div>
                 Shortening...
               </div>
             ) : (
@@ -134,74 +145,72 @@ export default function Home() {
         </form>
 
         {shortUrl && (
-          <div className="mt-6 bg-gray-200 relative overflow-hidden  p-4 rounded-md text-center">
-            <p className="text-gray-700 mb-2">Your Shortened URL:</p>
-            {copied ? (
-              <span className="ml-2 text-green-500 text-lg font-medium">
-                Copied!
-              </span>
-            ) : (
-              <button
-                onClick={handleCopy}
-                className="absolute right-0 top-0 p-2 text-2xl rounded-md"
-              >
-                <MdFileCopy />
-              </button>
-            )}
+          <div className="mt-8 bg-gray-100 relative overflow-hidden p-6 rounded-lg shadow-md text-center">
+            <p className="text-gray-700 mb-4 font-medium">
+              Your Shortened URL:
+            </p>
 
-            <div className="flex justify-center items-center space-x-4">
+            <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
               <a
                 href={shortUrl}
-                className="text-blue-600 hover:underline text-lg font-medium"
+                className="text-blue-600 hover:underline font-medium truncate"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {shortUrl}
               </a>
+
+              {copied ? (
+                <span className="text-green-500 font-medium text-sm ml-4">
+                  Copied!
+                </span>
+              ) : (
+                <button
+                  onClick={handleCopy}
+                  className="text-gray-500 hover:text-blue-500 ml-4 transition-all"
+                >
+                  <MdFileCopy className="text-xl" />
+                </button>
+              )}
             </div>
-            {/* Optional: Show message while copying */}
-            {copying && <p className="text-green-500 mt-2">Copied!</p>}
           </div>
         )}
       </div>
 
-      {/* Imgtoolsdescp Section */}
       <div className="text-black py-12">
-        <div className="max-w-screen-xl mx-auto px-4">
-          <h2 className="text-3xl font-extrabold text-center text-blue-500 mb-8">
+        <div className="max-w-screen-xl mx-auto px-6">
+          <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-8">
             Welcome to Exams of Bharat - Your Ultimate URL Shortener Hub
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-              <h3 className="text-xl font-semibold text-black mb-4">
+              <h3 className="text-xl font-semibold text-blue-600 mb-4">
                 Shorten Your Links
               </h3>
               <p className="text-gray-700">
-                Easily shorten long URLs to make them more manageable and
-                shareable. Perfect for social media, emails, and more.
+                Easily shorten long URLs to make them manageable and shareable.
+                Perfect for social media, emails, and more.
               </p>
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-black mb-4">
+              <h3 className="text-xl font-semibold text-purple-600 mb-4">
                 Customize Short URLs
               </h3>
               <p className="text-gray-700">
-                Create personalized short URLs with custom aliases to match your
-                brand or campaign, making your links memorable and recognizable.
+                Create personalized short URLs with custom aliases, making your
+                links memorable and recognizable.
               </p>
-              {/* hello siku */}
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-black mb-4">
+              <h3 className="text-xl font-semibold text-pink-600 mb-4">
                 Track Link Performance
               </h3>
               <p className="text-gray-700">
-                Monitor the click-through rates of your short links and track
-                their performance with analytics, giving you insights into user
-                engagement.
+                Monitor click-through rates of your short links and track their
+                performance with insights into user engagement.
               </p>
             </div>
           </div>
@@ -209,32 +218,32 @@ export default function Home() {
           <div className="mt-12 text-center">
             <p className="text-gray-600">
               Simplify your links and make them easier to share with Exams of
-              Bharat's URL Shortener. Visit{" "}
+              Bharat's URL Shortener. Visit
               <a
                 href="https://examsofbharat.com"
-                className="text-blue-500 hover:text-blue-400"
+                className="text-blue-500 hover:text-blue-400 ml-1"
               >
                 examsofbharat.com
-              </a>{" "}
+              </a>
               to get started!
             </p>
           </div>
         </div>
       </div>
 
-      {/* Footer Section */}
-      <footer className="bg-gray-800 w-full text-center py-4 mt-10">
+      <footer className="bg-gray-900 w-full text-center py-6">
         <p className="text-gray-300 text-sm">
-          © {new Date().getFullYear()} URL Shortener. All Rights Reserved.
+          © {new Date().getFullYear()} Exams of Bharat. All Rights Reserved.
         </p>
         <p className="text-gray-400 text-xs mt-2">
-          Built with ❤️ by{" "}
+          Built with ❤️ by
           <a
-            className="text-blue-400"
+            className="text-blue-400 ml-1"
             href="https://www.examsofbharat.com/"
             target="_blank"
+            rel="noopener noreferrer"
           >
-            examsofbharat
+            Exams of Bharat
           </a>
         </p>
       </footer>

@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   await dbConnect();
 
   if (req.method === "POST") {
-    const { originalUrl } = req.body;
+    const { originalUrl, alias } = req.body;
 
     if (!originalUrl) {
       return res.status(400).json({ error: "Original URL is required" });
@@ -21,12 +21,30 @@ export default async function handler(req, res) {
         return res.status(200).json({ shortUrl: existingUrl.shortUrl });
       }
 
-      // If the URL doesn't exist, generate a new short URL and save it
-      const shortUrl = shortid.generate();
-      const newUrl = await Url.create({ originalUrl, shortUrl });
+      if (!alias) {
+        // If no alias is provided, generate a new short URL
+        const shortUrl = shortid.generate();
+        const newUrl = await Url.create({ originalUrl, shortUrl });
+        return res.status(201).json(newUrl);
+      } else {
+        // Check if the alias already exists in the database
+        let existingAlias = await Url.findOne({ alias });
 
-      res.status(201).json(newUrl);
+        if (existingAlias) {
+          // Return an error if the alias is already taken
+          return res
+            .status(400)
+            .json({
+              error: "Alias is already in use. Please choose another one.",
+            });
+        }
+
+        // If the alias is unique, create a new URL with the alias
+        const newUrl = await Url.create({ originalUrl, shortUrl: alias });
+        return res.status(201).json(newUrl);
+      }
     } catch (error) {
+      console.error("Error:", error);
       res.status(500).json({ error: "Failed to shorten URL" });
     }
   } else {
