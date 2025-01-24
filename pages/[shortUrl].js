@@ -1,22 +1,33 @@
 // src/app/[shortUrl]/page.js
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dbConnect from "../lib/dbConnect";
 import Url from "../models/Url";
+import "../src/app/globals.css";
 
-// Client-side redirection logic
 export default function Redirect({ originalUrl }) {
+  const [loading, setLoading] = useState(true); // Track loading state
+
   useEffect(() => {
     if (originalUrl) {
-      // Perform the redirection on the client side
-      window.location.href = originalUrl;
+      // Simulate a small delay to show the loading spinner before redirecting
+      setTimeout(() => {
+        window.location.href = originalUrl;
+      }, 1000); // Delay of 1 second before redirect
     }
   }, [originalUrl]);
 
-  // Show a loading message while redirecting
-  return <p>Redirecting... Please wait.</p>;
+  return (
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-blue-500 to-teal-400 p-4">
+      <div className="flex flex-col items-center text-white text-center space-y-4">
+        <div className="w-16 h-16 border-4 border-t-4 border-white rounded-full animate-spin"></div>{" "}
+        {/* Spinner */}
+        <p className="text-xl font-semibold">Redirecting...</p>
+        <p className="text-lg">Please wait while we take you there.</p>
+      </div>
+    </div>
+  );
 }
 
-// Fetch the original URL from the database on the server side
 export async function getServerSideProps(context) {
   try {
     // Connect to the database
