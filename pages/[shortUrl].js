@@ -19,6 +19,7 @@ export default function Redirect({ originalUrl }) {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-white">
       <div className="flex flex-col items-center text-white text-center space-y-4">
+        {/* Spinner */}
         <div role="status">
           <svg
             aria-hidden="true"
@@ -36,11 +37,7 @@ export default function Redirect({ originalUrl }) {
               fill="currentFill"
             />
           </svg>
-         
         </div>
-
-        {/* Spinner */}
-       
       </div>
     </div>
   );

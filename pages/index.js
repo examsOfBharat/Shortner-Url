@@ -3,6 +3,8 @@ import "../src/app/globals.css";
 import Imgtoolsdescp from "../Components/Imgtoolsdescp";
 import { MdFileCopy } from "react-icons/md";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { motion } from "framer-motion";
+
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState("");
@@ -182,49 +184,50 @@ export default function Home() {
           )}
         </div>
 
-        {shortUrl && !isSmallScreen && (
-          <div className="mt-8 bg-gradient-to-r  max-w-lg from-blue-50 to-gray-100 p-8 rounded-2xl shadow-lg text-center">
-            <p className="text-gray-800 mb-4 font-semibold text-lg">
-              Your Shortened URL
+        {shortUrl && (
+          <motion.div
+            initial={{ opacity: 0, x: -200 }} // Start with these properties
+            animate={{ opacity: 1, x: 0 }} // Animate to these properties
+            transition={{ duration: 1, ease: "easeOut" }} // Define the animation duration and easing
+            className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md text-center"
+          >
+            <p className="text-gray-700 mb-4 font-medium">
+              Your Shortened URL:
             </p>
-            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-md border border-gray-200">
+            <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
               <a
                 href={shortUrl}
-                className="text-blue-600 hover:underline font-medium truncate text-sm sm:text-base"
+                className="text-blue-600 hover:underline font-medium truncate"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {shortUrl}
               </a>
               {copied ? (
-                <span className="text-green-600 font-medium text-sm ml-4">
-                  ✅ Copied!
+                <span className="text-green-500 font-medium text-sm ml-4">
+                  Copied!
                 </span>
               ) : (
                 <button
                   onClick={handleCopy}
-                  className="text-gray-500 hover:text-blue-500 ml-4 transition-all duration-300 ease-in-out flex items-center"
+                  className="text-gray-500 hover:text-blue-500 ml-4 transition-all"
                 >
-                  <MdFileCopy className="text-xl sm:text-2xl" />
-                  <span className="ml-2 text-sm hidden sm:inline">Copy</span>
+                  <MdFileCopy className="text-xl" />
                 </button>
               )}
             </div>
-
-            {!isSmallScreen && (
-              <button
-                onClick={handleNewShortenUrl}
-                className={`w-full py-3 mt-4 rounded-lg shadow-md text-white text-lg font-semibold ${
-                  isButtonActive
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-                disabled={!isButtonActive}
-              >
-                Create New Shorten URL
-              </button>
-            )}
-          </div>
+            <button
+              onClick={handleNewShortenUrl}
+              className={`w-full py-3 mt-4 rounded-lg shadow-md text-white text-lg font-semibold ${
+                isButtonActive
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}
+              disabled={!isButtonActive}
+            >
+              Create New Shorten URL
+            </button>
+          </motion.div>
         )}
       </div>
       {/* =========================================footer section */}
