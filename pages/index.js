@@ -99,7 +99,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 flex flex-col items-center justify-between">
-      <div className="  relative w-full md:h-screen flex justify-evenly items-center md:p-4 lg:p-4 md:bg-gradient-to-r from-purple-500 via-pink-400 to-blue-400">
+      <div className="  relative w-full md:h-screen flex flex-col md:flex-row lg:flex-row justify-evenly items-center md:p-4 lg:p-4 md:bg-gradient-to-r from-purple-500 via-pink-400 to-blue-400">
         <div className="p-8 rounded-3xl shadow-2xl w-full max-w-lg  bg-white ">
           <h1 className="text-6xl p-3 font-serif rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-transparent bg-clip-text font-bold text-center mb-8">
             Short URL
@@ -184,51 +184,52 @@ export default function Home() {
           )}
         </div>
 
-        {shortUrl && (
-          <motion.div
-            initial={{ opacity: 0, x: -200 }} // Start with these properties
-            animate={{ opacity: 1, x: 0 }} // Animate to these properties
-            transition={{ duration: 1, ease: "easeOut" }} // Define the animation duration and easing
-            className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md text-center"
-          >
-            <p className="text-gray-700 mb-4 font-medium">
-              Your Shortened URL:
-            </p>
-            <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
-              <a
-                href={shortUrl}
-                className="text-blue-600 hover:underline font-medium truncate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {shortUrl}
-              </a>
-              {copied ? (
-                <span className="text-green-500 font-medium text-sm ml-4">
-                  Copied!
-                </span>
-              ) : (
-                <button
-                  onClick={handleCopy}
-                  className="text-gray-500 hover:text-blue-500 ml-4 transition-all"
-                >
-                  <MdFileCopy className="text-xl" />
-                </button>
-              )}
-            </div>
-            <button
-              onClick={handleNewShortenUrl}
-              className={`w-full py-3 mt-4 rounded-lg shadow-md text-white text-lg font-semibold ${
-                isButtonActive
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-gray-300 cursor-not-allowed"
-              }`}
-              disabled={!isButtonActive}
+        {shortUrl &&
+          !isSmallScreen &&(
+            <motion.div
+              initial={{ opacity: 0, x: -200 }} // Start with these properties
+              animate={{ opacity: 1, x: 0 }} // Animate to these properties
+              transition={{ duration: 1, ease: "easeOut" }} // Define the animation duration and easing
+              className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md text-center"
             >
-              Create New Shorten URL
-            </button>
-          </motion.div>
-        )}
+              <p className="text-gray-700 mb-4 font-medium">
+                Your Shortened URL:
+              </p>
+              <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
+                <a
+                  href={shortUrl}
+                  className="text-blue-600 hover:underline font-medium truncate"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortUrl}
+                </a>
+                {copied ? (
+                  <span className="text-green-500 font-medium text-sm ml-4">
+                    Copied!
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleCopy}
+                    className="text-gray-500 hover:text-blue-500 ml-4 transition-all"
+                  >
+                    <MdFileCopy className="text-xl" />
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={handleNewShortenUrl}
+                className={`w-full py-3 mt-4 rounded-lg shadow-md text-white text-lg font-semibold ${
+                  isButtonActive
+                    ? "bg-green-500 hover:bg-green-600"
+                    : "bg-gray-300 cursor-not-allowed"
+                }`}
+                disabled={!isButtonActive}
+              >
+                Create New Shorten URL
+              </button>
+            </motion.div>
+          )}
       </div>
       {/* =========================================footer section */}
       <div className="text-black py-12">
