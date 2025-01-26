@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import dbConnect from "../lib/dbConnect";
 import Url from "../models/Url";
-import "../src/app/globals.css";
 
 export default function Redirect({ originalUrl }) {
   const [loading, setLoading] = useState(true); // Track loading state

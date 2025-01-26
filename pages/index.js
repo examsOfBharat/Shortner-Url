@@ -1,10 +1,8 @@
 import { useState } from "react";
-import "../src/app/globals.css";
 import Imgtoolsdescp from "../Components/Imgtoolsdescp";
 import { MdFileCopy } from "react-icons/md";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { motion } from "framer-motion";
-
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState("");
@@ -99,9 +97,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 flex flex-col items-center justify-between">
-      <div className="  relative w-full md:h-screen flex flex-col md:flex-row lg:flex-row justify-evenly items-center md:p-4 lg:p-4 md:bg-gradient-to-r from-purple-500 via-pink-400 to-blue-400">
-        <div className="p-8 rounded-3xl shadow-2xl w-full max-w-lg  bg-white ">
-          <h1 className="text-6xl p-3 font-serif rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-transparent bg-clip-text font-bold text-center mb-8">
+      <div className="relative w-full md:h-screen flex flex-col md:flex-row lg:flex-row justify-evenly items-center md:p-6 lg:p-8 md:bg-gradient-to-r from-purple-500 via-pink-400 to-blue-400">
+        <div className="p-8 rounded-3xl shadow-2xl w-full max-w-lg bg-white">
+          <h1 className="text-5xl sm:text-6xl p-3 font-serif rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-transparent bg-clip-text font-bold text-center mb-8">
             Short URL
           </h1>
 
@@ -136,7 +134,34 @@ export default function Home() {
               }`}
               disabled={loading}
             >
-              {loading ? "Shortening..." : "Shorten URL"}
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <svg
+                    className="mr-3 animate-spin text-white w-5 h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      className="opacity-25"
+                    ></circle>
+                    <path
+                      fill="currentColor"
+                      d="M4 12a8 8 0 0116 0"
+                      className="opacity-75"
+                    ></path>
+                  </svg>
+                  Shortening URL…
+                </div>
+              ) : (
+                "Shorten URL"
+              )}
             </button>
           </form>
 
@@ -184,124 +209,55 @@ export default function Home() {
           )}
         </div>
 
-        {shortUrl &&
-          !isSmallScreen &&(
-            <motion.div
-              initial={{ opacity: 0, x: -200 }} // Start with these properties
-              animate={{ opacity: 1, x: 0 }} // Animate to these properties
-              transition={{ duration: 1, ease: "easeOut" }} // Define the animation duration and easing
-              className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md text-center"
-            >
-              <p className="text-gray-700 mb-4 font-medium">
-                Your Shortened URL:
-              </p>
-              <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
-                <a
-                  href={shortUrl}
-                  className="text-blue-600 hover:underline font-medium truncate"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {shortUrl}
-                </a>
-                {copied ? (
-                  <span className="text-green-500 font-medium text-sm ml-4">
-                    Copied!
-                  </span>
-                ) : (
-                  <button
-                    onClick={handleCopy}
-                    className="text-gray-500 hover:text-blue-500 ml-4 transition-all"
-                  >
-                    <MdFileCopy className="text-xl" />
-                  </button>
-                )}
-              </div>
-              <button
-                onClick={handleNewShortenUrl}
-                className={`w-full py-3 mt-4 rounded-lg shadow-md text-white text-lg font-semibold ${
-                  isButtonActive
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-gray-300 cursor-not-allowed"
-                }`}
-                disabled={!isButtonActive}
-              >
-                Create New Shorten URL
-              </button>
-            </motion.div>
-          )}
-      </div>
-      {/* =========================================footer section */}
-      <div className="text-black py-12">
-        <div className="max-w-screen-xl mx-auto px-6">
-          <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-8">
-            Welcome to Exams of Bharat - Your Ultimate URL Shortener Hub
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <h3 className="text-xl font-semibold text-blue-600 mb-4">
-                Shorten Your Links
-              </h3>
-              <p className="text-gray-700">
-                Easily shorten long URLs to make them manageable and shareable.
-                Perfect for social media, emails, and more.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-purple-600 mb-4">
-                Customize Short URLs
-              </h3>
-              <p className="text-gray-700">
-                Create personalized short URLs with custom aliases, making your
-                links memorable and recognizable.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-semibold text-pink-600 mb-4">
-                Track Link Performance
-              </h3>
-              <p className="text-gray-700">
-                Monitor click-through rates of your short links and track their
-                performance with insights into user engagement.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-12 text-center">
-            <p className="text-gray-600">
-              Simplify your links and make them easier to share with Exams of
-              Bharat's URL Shortener. Visit
-              <a
-                href="https://examsofbharat.com"
-                className="text-blue-500 hover:text-blue-400 ml-1"
-              >
-                examsofbharat.com
-              </a>
-              to get started!
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <footer className="bg-gray-900 w-full text-center py-6">
-        <p className="text-gray-300 text-sm">
-          © {new Date().getFullYear()} Exams of Bharat. All Rights Reserved.
-        </p>
-        <p className="text-gray-400 text-xs mt-2">
-          Built with ❤️ by
-          <a
-            className="text-blue-400 ml-1"
-            href="https://www.examsofbharat.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+        {shortUrl && !isSmallScreen && (
+          <motion.div
+            initial={{ opacity: 0, x: -200 }} // Start with these properties
+            animate={{ opacity: 1, x: 0 }} // Animate to these properties
+            transition={{ duration: 1, ease: "easeOut" }} // Define the animation duration and easing
+            className="mt-8 bg-gray-100 p-6 rounded-lg shadow-md text-center"
           >
-            Exams of Bharat
-          </a>
-        </p>
-      </footer>
+            <p className="text-gray-700 mb-4 font-medium">
+              Your Shortened URL:
+            </p>
+            <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
+              <a
+                href={shortUrl}
+                className="text-blue-600 hover:underline font-medium truncate"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortUrl}
+              </a>
+              {copied ? (
+                <span className="text-green-500 font-medium text-sm ml-4">
+                  Copied!
+                </span>
+              ) : (
+                <button
+                  onClick={handleCopy}
+                  className="text-gray-500 hover:text-blue-500 ml-4 transition-all"
+                >
+                  <MdFileCopy className="text-xl" />
+                </button>
+              )}
+            </div>
+            <button
+              onClick={handleNewShortenUrl}
+              className={`w-full py-3 mt-4 rounded-lg shadow-md text-white text-lg font-semibold ${
+                isButtonActive
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}
+              disabled={!isButtonActive}
+            >
+              Create New Shorten URL
+            </button>
+          </motion.div>
+        )}
+      </div>
+
+      {/* =====================Footer section================*/}
+      <Imgtoolsdescp />
     </div>
   );
 }
