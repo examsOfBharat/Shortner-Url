@@ -5,7 +5,7 @@ const ShortUrlDesc = () => {
       <div className="text-black py-12">
         <div className="max-w-screen-xl mx-auto px-6">
           <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-8">
-            Welcome to Exams of Bharat - Your Ultimate URL Shortener Hub
+            Welcome to shorturl - Your Ultimate URL Shortener Hub
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -58,17 +58,17 @@ const ShortUrlDesc = () => {
 
       <footer className="bg-gray-900 w-full text-center py-6">
         <p className="text-gray-300 text-sm">
-          © {new Date().getFullYear()} Exams of Bharat. All Rights Reserved.
+          © {new Date().getFullYear()} shorturl. All Rights Reserved.
         </p>
         <p className="text-gray-400 text-xs mt-2">
           Built with ❤️ by
           <a
             className="text-blue-400 ml-1"
-            href="https://www.examsofbharat.com/"
+            href="https://www.shorturl.org.in/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Exams of Bharat
+            shorturl.org.in
           </a>
         </p>
       </footer>

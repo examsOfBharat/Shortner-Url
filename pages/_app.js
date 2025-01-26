@@ -6,7 +6,7 @@ export default function App({ Component, pageProps }) {
     <>
       {/* Global SEO Settings */}
       <Head>
-        <title>Chota Url Creater</title> {/* Default Title */}
+        <title>Shorturl</title> {/* Default Title */}
         <meta
           name="description"
           content="Transform long, cumbersome URLs into short, easy-to-share links with our URL Shortener. Built using modern web technologies like Next.js and MongoDB, this tool provides a fast, reliable, and user-friendly experience for managing your links. Whether you're a business looking to track clicks or an individual simplifying your sharing process."
