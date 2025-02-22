@@ -2,7 +2,7 @@ import React from "react";
 const ShortUrlDesc = () => {
   return (
     <section>
-      <div className="text-black py-12">
+      <div className="text-black py-12 bg-gray-100">
         <div className="max-w-screen-xl mx-auto px-6">
           <h2 className="text-3xl font-extrabold text-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-8">
             Welcome to shorturl - Your Ultimate URL Shortener Hub
@@ -42,36 +42,20 @@ const ShortUrlDesc = () => {
 
           <div className="mt-12 text-center">
             <p className="text-gray-600">
-              Simplify your links and make them easier to share with Exams of
-              Bharat's URL Shortener. Visit
-              <a
-                href="https://examsofbharat.com"
-                className="text-blue-500 hover:text-blue-400 ml-1"
+              Powered by 
+              <span
+             
+                className="text-blue-500  font-bold font-serif ml-2"
               >
-                examsofbharat.com
-              </a>
-              to get started!
+                Cynerotech
+              </span>
+             
             </p>
           </div>
         </div>
       </div>
 
-      <footer className="bg-gray-900 w-full text-center py-6">
-        <p className="text-gray-300 text-sm">
-          © {new Date().getFullYear()} shorturl. All Rights Reserved.
-        </p>
-        <p className="text-gray-400 text-xs mt-2">
-          Built with ❤️ by
-          <a
-            className="text-blue-400 ml-1"
-            href="https://www.shorturl.org.in/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            shorturl.org.in
-          </a>
-        </p>
-      </footer>
+      
     </section>
   );
 };

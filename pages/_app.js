@@ -1,9 +1,10 @@
+import Footer from "../Components/Footer";
 import "../styles/globals.css";
 import Head from "next/head";
 
 export default function App({ Component, pageProps }) {
   return (
-    <>
+    <div className=" bg-black">
       {/* Global SEO Settings */}
       <Head>
         <title>Shorturl</title> {/* Default Title */}
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }) {
 
       {/* Render the current page */}
       <Component {...pageProps} />
-    </>
+      <Footer></Footer>
+    </div>
   );
 }

@@ -3,6 +3,7 @@ import Imgtoolsdescp from "../Components/Imgtoolsdescp";
 import { MdFileCopy } from "react-icons/md";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { motion } from "framer-motion";
+import Footer from "../Components/Footer";
 
 export default function Home() {
   const [originalUrl, setOriginalUrl] = useState("");
@@ -96,7 +97,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 flex flex-col items-center justify-between">
+    <>
+       <div className=" bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-between">
       <div className="relative w-full md:h-screen flex flex-col md:flex-row lg:flex-row justify-evenly items-center md:p-6 lg:p-8 md:bg-gradient-to-r from-purple-500 via-pink-400 to-blue-400">
         <div className="p-8 rounded-3xl shadow-2xl w-full max-w-lg bg-white">
           <h1 className="text-5xl sm:text-6xl p-3 font-serif rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-transparent bg-clip-text font-bold text-center mb-8">
@@ -257,7 +259,11 @@ export default function Home() {
       </div>
 
       {/* =====================Footer section================*/}
-      <Imgtoolsdescp />
+      
     </div>
+    <Imgtoolsdescp />
+ 
+    </>
+   
   );
 }
