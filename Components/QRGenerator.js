@@ -8,7 +8,7 @@ const QRGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [color, setColor] = useState("#000000"); // Default QR code color
-  const [size, setSize] = useState(200); // Default QR code size
+  const [size, setSize] = useState(1000); // Default QR code size
   const [showResult, setShowResult] = useState(false); // Toggle between input and result layouts
 
   // Function to validate URL
