@@ -35,6 +35,11 @@ const Footer = () => {
                 The Company
               </h2>
               <ul className="space-y-4">
+              <li>
+                  <Link href="/qr-generator" className="text-gray-400 hover:text-white transition duration-300">
+                    QRGenerator
+                  </Link>
+                </li>
                 <li>
                   <Link href="/" className="text-gray-400 hover:text-white transition duration-300">
                     Home
