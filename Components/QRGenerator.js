@@ -69,7 +69,7 @@ const QRGenerator = () => {
   };
 
   return (
-    <div className=" w-full md:w-3/6 mt-10 p-8 bg-white rounded-2xl shadow-xl">
+    <div className="  w-full md:w-3/6  p-8 bg-white rounded-2xl shadow-xl">
       {/* Header */}
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
         QR Code Generator

@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }) {
 
       {/* Render the current page */}
       <Component {...pageProps} />
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl p-4 shadow-2xl flex items-center justify-evenly">
+      <div className="fixed bottom-2 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md bg-white/20 backdrop-blur-lg border border-white/30 rounded-3xl p-4 shadow-2xl flex items-center justify-evenly">
         {/* ShortUrl Button */}
         <button className="flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold px-6 py-3 rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg">
         <Link
