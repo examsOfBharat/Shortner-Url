@@ -21,6 +21,7 @@ export default function App({ Component, pageProps }) {
           name="google-site-verification"
           content="XcKtS9c9Qg4mq5p0dHl8h18L4gedL8MKJm1xuRkZ480"
         />
+        <meta name="google-adsense-account" content="ca-pub-2274118949656354"></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
