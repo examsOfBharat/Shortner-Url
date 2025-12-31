@@ -1,55 +1,79 @@
-// components/QRGenerator.js
 import React, { useState } from "react";
 import QRCode from "qrcode";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  MdQrCode, MdDownload, MdRefresh, MdColorLens, MdLink, 
+  MdWifi, MdEmail, MdTextFormat, MdVisibility, MdVisibilityOff 
+} from "react-icons/md";
+import { BiLoaderAlt } from "react-icons/bi";
 
 const QRGenerator = () => {
+  // Mode State: 'url', 'wifi', 'email', 'text'
+  const [mode, setMode] = useState("url");
+  
+  // Input States
   const [url, setUrl] = useState("");
+  const [text, setText] = useState("");
+  
+  // WiFi State
+  const [wifiSsid, setWifiSsid] = useState("");
+  const [wifiPassword, setWifiPassword] = useState("");
+  const [wifiEncryption, setWifiEncryption] = useState("WPA");
+  const [wifiHidden, setWifiHidden] = useState(false);
+  const [showWifiPassword, setShowWifiPassword] = useState(false);
+
+  // Email State
+  const [emailTo, setEmailTo] = useState("");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+
+  // Common State
   const [qrCode, setQrCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-
-
-  
-  const [color, setColor] = useState("#000000"); // Default QR code color
-  const [size, setSize] = useState(1000); // Default QR code size
-  const [showResult, setShowResult] = useState(false); // Toggle between input and result layouts
-
-  // Function to validate URL
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (err) {
-      return false;
-    }
-  };
+  const [color, setColor] = useState("#000000"); 
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const [showResult, setShowResult] = useState(false); 
 
   const generateQRCode = async () => {
-    if (!url.trim()) {
-      setError("Please enter a valid URL.");
-      return;
-    }
+    setError("");
+    let finalData = "";
 
-    if (!isValidUrl(url)) {
-      setError("Please enter a valid URL (e.g., https://example.com).");
-      return;
+    // Validation & Data Construction
+    if (mode === "url") {
+      if (!url.trim()) return setError("Please enter a valid URL.");
+      try { new URL(url); } catch { return setError("Please enter a valid URL (include http/https)."); }
+      finalData = url;
+    } 
+    else if (mode === "wifi") {
+      if (!wifiSsid.trim()) return setError("Network name (SSID) is required.");
+      // WIFI:S:<SSID>;T:<WEP|WPA|nopass>;P:<PASSWORD>;H:<true|false>;;
+      finalData = `WIFI:S:${wifiSsid};T:${wifiEncryption};P:${wifiPassword};H:${wifiHidden};;`;
+    } 
+    else if (mode === "email") {
+      if (!emailTo.trim()) return setError("Recipient email is required.");
+      finalData = `mailto:${emailTo}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    } 
+    else if (mode === "text") {
+      if (!text.trim()) return setError("Please enter some text.");
+      finalData = text;
     }
 
     setIsLoading(true);
-    setError("");
+    // Simulate delay for UX
+    await new Promise(resolve => setTimeout(resolve, 600));
+
     try {
-      const dataUrl = await QRCode.toDataURL(url, {
-        width: size,
-        color: {
-          dark: color, // QR code color
-          light: "#ffffff", // Background color
-        },
+      const dataUrl = await QRCode.toDataURL(finalData, {
+        width: 1000,
+        margin: 2,
+        color: { dark: color, light: bgColor },
       });
       setQrCode(dataUrl);
-      setShowResult(true); // Show the result layout
+      setShowResult(true);
     } catch (err) {
-      console.error("Error generating QR code:", err);
-      setError("Failed to generate QR code. Please try again.");
+      console.error(err);
+      setError("Failed to generate QR code.");
     } finally {
       setIsLoading(false);
     }
@@ -58,126 +82,256 @@ const QRGenerator = () => {
   const downloadQRCode = () => {
     const link = document.createElement("a");
     link.href = qrCode;
-    link.download = "qrcode.png";
+    link.download = `qrcode-${mode}-${Date.now()}.png`;
     link.click();
   };
 
   const resetGenerator = () => {
-    setUrl("");
-    setQrCode("");
-    setShowResult(false); // Revert to the input layout
+    setShowResult(false);
+    setError("");
   };
 
+  // Mode Selection Tabs
+  const tabs = [
+    { id: "url", icon: <MdLink />, label: "URL" },
+    { id: "wifi", icon: <MdWifi />, label: "Wi-Fi" },
+    { id: "email", icon: <MdEmail />, label: "Email" },
+    { id: "text", icon: <MdTextFormat />, label: "Text" },
+  ];
+
   return (
-    <div className="  w-full md:w-3/6  p-8 bg-white rounded-2xl shadow-xl">
-      {/* Header */}
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        QR Code Generator
-      </h2>
+    <motion.div 
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, layout: { duration: 0.3 } }}
+      className="w-full max-w-2xl mx-auto glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden"
+    >
+      {/* Background Glows */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary-600/10 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
 
-      {/* Input Layout (Hidden when result is shown) */}
-      {!showResult && (
-        <>
-          {/* URL Input */}
-          <div className="mb-6">
-            <label htmlFor="url-input" className="block text-sm font-medium text-gray-700 mb-2">
-              Paste your link here
-            </label>
-            <input
-              type="text"
-              id="url-input"
-              placeholder="https://example.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-            />
-          </div>
+      <motion.div layout className="text-center mb-8">
+        <h2 className="text-3xl font-display font-bold text-white mb-2">
+          Smart <span className="text-gradient">QR Generator</span>
+        </h2>
+        <p className="text-gray-400 text-sm">Select a mode to generate your custom QR code.</p>
+      </motion.div>
 
-          {/* Customization Options */}
-          <div className="mb-6">
-            <div className="flex items-center space-x-4 mb-4">
-              <label htmlFor="color-picker" className="text-sm font-medium text-gray-700">
-                QR Code Color:
-              </label>
-              <input
-                type="color"
-                id="color-picker"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-10 h-10 rounded-lg cursor-pointer shadow-sm"
-              />
-            </div>
-            <div className="flex items-center space-x-4">
-              <label htmlFor="size-input" className="text-sm font-medium text-gray-700">
-                QR Code Size:
-              </label>
-              <input
-                type="number"
-                id="size-input"
-                value={size}
-                onChange={(e) => setSize(Number(e.target.value))}
-                className="w-20 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                min="100"
-                max="500"
-              />
-            </div>
-          </div>
-
-          {/* Generate Button */}
-          <button
-            onClick={generateQRCode}
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition duration-300 flex items-center justify-center"
+      <AnimatePresence mode="wait">
+        {!showResult ? (
+          <motion.div
+            layout
+            key="input-form"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
           >
-            {isLoading ? (
-              <div className="flex items-center">
-                <div className="w-4 h-4 border-2 border-white border-t-2 border-t-transparent rounded-full animate-spin mr-2"></div>
-                Generating...
-              </div>
-            ) : (
-              "Generate QR Code"
-            )}
-          </button>
-
-          {/* Error Message */}
-          {error && (
-            <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg text-center text-sm">
-              {error}
+            {/* Mode Selector */}
+            <div className="grid grid-cols-4 gap-2 mb-8 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => { setMode(tab.id); setError(""); }}
+                  className="relative flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 py-3 rounded-xl text-sm font-medium transition-colors"
+                >
+                  {mode === tab.id && (
+                    <motion.div
+                      layoutId="active-tab"
+                      className="absolute inset-0 bg-primary-600 rounded-xl shadow-lg shadow-primary-500/20"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                  <span className={`relative z-10 text-xl ${mode === tab.id ? "text-white" : "text-gray-400"}`}>{tab.icon}</span>
+                  <span className={`relative z-10 hidden sm:inline ${mode === tab.id ? "text-white" : "text-gray-400"}`}>{tab.label}</span>
+                </button>
+              ))}
             </div>
-          )}
-        </>
-      )}
 
-      {/* Result Layout (Shown after QR code is generated) */}
-      {showResult && (
-        <div className="flex flex-col items-center">
-          {/* QR Code Display */}
-          <div className="p-4 bg-white rounded-lg shadow-md border border-gray-100">
-            <img
-              src={qrCode}
-              alt="QR Code"
-              className="rounded-lg"
-            />
-          </div>
+            {/* Input Fields based on Mode - Animated Switch */}
+            <div className="min-h-[220px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={mode}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {mode === "url" && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Website URL</label>
+                      <input
+                        type="text"
+                        placeholder="https://example.com"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        className="input-field"
+                      />
+                    </div>
+                  )}
 
-          {/* Download Button */}
-          <button
-            onClick={downloadQRCode}
-            className="mt-4 w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 rounded-lg hover:from-green-700 hover:to-teal-700 transition duration-300"
+                  {mode === "wifi" && (
+                    <div className="space-y-4 mb-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Network Name (SSID)</label>
+                        <input
+                          type="text"
+                          placeholder="MyHomeWiFi"
+                          value={wifiSsid}
+                          onChange={(e) => setWifiSsid(e.target.value)}
+                          className="input-field"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Password</label>
+                            <div className="relative">
+                                <input
+                                  type={showWifiPassword ? "text" : "password"}
+                                  placeholder="WiFi Password"
+                                  value={wifiPassword}
+                                  onChange={(e) => setWifiPassword(e.target.value)}
+                                  className="input-field pr-10"
+                                />
+                                <button 
+                                  type="button"
+                                  onClick={() => setShowWifiPassword(!showWifiPassword)}
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                                >
+                                  {showWifiPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Encryption</label>
+                          <select 
+                            value={wifiEncryption} 
+                            onChange={(e) => setWifiEncryption(e.target.value)}
+                            className="input-field appearance-none"
+                          >
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">No Password</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {mode === "email" && (
+                    <div className="space-y-4 mb-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Recipient Email</label>
+                        <input
+                          type="email"
+                          placeholder="friend@example.com"
+                          value={emailTo}
+                          onChange={(e) => setEmailTo(e.target.value)}
+                          className="input-field"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Subject</label>
+                        <input
+                          type="text"
+                          placeholder="Meeting Reminder"
+                          value={emailSubject}
+                          onChange={(e) => setEmailSubject(e.target.value)}
+                          className="input-field"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Message Body</label>
+                        <textarea
+                          placeholder="Hello, I wanted to reach out regarding..."
+                          value={emailBody}
+                          onChange={(e) => setEmailBody(e.target.value)}
+                          className="input-field h-24 resize-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {mode === "text" && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-300 mb-2 ml-1">Plain Text</label>
+                      <textarea
+                        placeholder="Enter any text here..."
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        className="input-field h-32 resize-none"
+                      />
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Color Pickers (Collapsed by default layout logic, simplified here) */}
+            <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+               <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-2 rounded-xl">
+                  <MdColorLens className="text-gray-400" />
+                  <span className="text-gray-400 text-xs uppercase">QR Color</span>
+                  <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0" />
+               </div>
+               <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-2 rounded-xl">
+                  <MdColorLens className="text-gray-400" />
+                  <span className="text-gray-400 text-xs uppercase">Background</span>
+                  <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0" />
+               </div>
+            </div>
+
+            {/* Error & Button */}
+            {error && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="text-red-400 text-sm text-center mb-4 font-medium">{error}</motion.div>}
+            
+            <button
+              onClick={generateQRCode}
+              disabled={isLoading}
+              className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg shadow-primary-500/10 transition-all ${
+                isLoading ? "bg-gray-700 cursor-not-allowed" : "bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-500 hover:to-secondary-500 hover:scale-[1.01]"
+              }`}
+            >
+              {isLoading ? (
+                <div className="flex justify-center items-center gap-2"><BiLoaderAlt className="animate-spin text-xl" /> Generating...</div>
+              ) : (
+                <div className="flex justify-center items-center gap-2"><MdQrCode className="text-xl" /> Generate QR Code</div>
+              )}
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            layout
+            key="result-view"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col items-center"
           >
-            Download QR Code
-          </button>
-
-          {/* Generate Again Button */}
-          <button
-            onClick={resetGenerator}
-            className="mt-4 w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 rounded-lg hover:from-gray-700 hover:to-gray-800 transition duration-300"
-          >
-            Generate Again
-          </button>
-        </div>
-      )}
-    </div>
+            <div className="p-4 bg-white rounded-2xl shadow-xl border border-white/10 mb-8 max-w-[280px]">
+              <img src={qrCode} alt="Generated QR" className="rounded-xl w-full h-auto" />
+            </div>
+            
+            <div className="w-full space-y-3">
+              <button
+                onClick={downloadQRCode}
+                className="w-full py-3 rounded-xl bg-green-500 text-white font-bold hover:bg-green-400 transition-all flex items-center justify-center gap-2"
+              >
+                <MdDownload /> Download PNG
+              </button>
+              <button
+                onClick={resetGenerator}
+                className="w-full py-3 rounded-xl bg-white/5 text-gray-300 font-medium hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+              >
+                <MdRefresh /> Create Another
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
