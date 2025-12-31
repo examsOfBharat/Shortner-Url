@@ -17,7 +17,16 @@ Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());
 
+import { useRouter } from "next/router";
+
 export default function App({ Component, pageProps }) {
+  const router = useRouter();
+  const isRedirectPage = router.pathname === '/[shortUrl]';
+
+  if (isRedirectPage) {
+    return <Component {...pageProps} />;
+  }
+
   return (
     <Layout>
       <Component {...pageProps} />
